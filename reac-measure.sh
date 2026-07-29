@@ -7,29 +7,39 @@
 # ±ppm metric, and appends a row to measure-log.csv. Run before AND after every
 # rig/config change; compare the ppm column to catch regressions.
 #
-# Usage: reac-measure.sh LABEL [HOST] [IFACE]
+# Usage: reac-measure.sh LABEL HOST [IFACE]
 #   LABEL   free text tag for this run (e.g. baseline, etf-on, wired-hwbridge)
-#   HOST    router to capture on            (default ROUTER_IP = reac1/FOH)
+#   HOST    router to capture on -- REQUIRED, no default (user@host or an
+#           ~/.ssh/config alias); this script ships no rig address
 #   IFACE   interface carrying the upstream (default reactap.12 = gretap REAC B)
+#
+# Authentication is your ssh agent / key -- this script carries no password.
+# Override the whole ssh invocation with $REAC_SSH if your rig needs something
+# else (e.g. a jump host or a non-default port).
 #
 # NOTE: read-only on the rig (tcpdump only). The capture point depends on the
 # topology: gretap path -> reactap.12; pure-L2 wired bridge -> the box-side lanN.
 
 set -e
 LABEL="${1:-run}"
-HOST="${2:-ROUTER_IP}"
+HOST="$2"
 IFACE="${3:-reactap.12}"
-PW="REDACTED"
+
+if [ -z "$HOST" ]; then
+	echo "usage: $0 LABEL HOST [IFACE]" >&2
+	exit 2
+fi
+
 DIR="$(cd "$(dirname "$0")" && pwd)"
 LOG="$DIR/measure-log.csv"
-SSH="sshpass -p $PW ssh -o StrictHostKeyChecking=no -o ConnectTimeout=12 root@$HOST"
+SSH="${REAC_SSH:-ssh -o ConnectTimeout=12 $HOST}"
 
 [ -f "$LOG" ] || echo "label,frames,f0_hz,purity,ppm_1sigma,wobble_hz,beeps,utc" > "$LOG"
 
 echo "[measure] $LABEL: capturing 28000 upstream frames on $HOST:$IFACE ..."
 $SSH "rm -f /tmp/m.pcap; tcpdump -i $IFACE -nn -s 700 'ether proto 0x8819 and less 900' -c 28000 -w /tmp/m.pcap 2>/dev/null; gzip -f /tmp/m.pcap"
 
-# pull via ssh-cat with a size check (scp drops on the flaky WiFi mgmt link)
+# pull via ssh-cat with a size check (scp drops on a flaky WiFi mgmt link)
 RSZ="$($SSH 'wc -c </tmp/m.pcap.gz' | tr -d ' ')"
 i=1
 while [ "$i" -le 6 ]; do
