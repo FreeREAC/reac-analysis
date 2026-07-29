@@ -1,0 +1,4 @@
+# reac-labtools runtime dependencies.
+# These are the reason this kit lives apart from reac-tools, which is stdlib-only.
+numpy>=1.24
+scipy>=1.10
