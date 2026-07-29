@@ -1,8 +1,8 @@
-# reac-labtools
+# reac-analysis
 
 The **signal-analysis bench** for **Roland REAC** (audio-over-Ethernet,
 EtherType `0x8819`) captures. Where [`reac-tools`](https://github.com/FreeREAC/reac-tools)
-answers *"did the network deliver the frames?"*, reac-labtools answers
+answers *"did the network deliver the frames?"*, reac-analysis answers
 *"what does the audio inside them actually sound like, and is the recovered
 clock any good?"* — heterodyne pitch and clock-wobble meters, spectrum
 classification, per-channel decode health, glitch and A/B defect detection.
@@ -15,7 +15,7 @@ and adapted per experiment. There is no package, no stable API, no `pip install`
 
 The two repositories split on a hard constraint, not on taste:
 
-|  | [`reac-tools`](https://github.com/FreeREAC/reac-tools) | **reac-labtools** (this repo) |
+|  | [`reac-tools`](https://github.com/FreeREAC/reac-tools) | **reac-analysis** (this repo) |
 |---|---|---|
 | Shape | importable `reac.*` package + CLI | flat single-purpose scripts |
 | Dependencies | **none — Python standard library only** | **numpy + scipy** |
@@ -34,7 +34,7 @@ use the other.
 
 > Not to be confused with [`FreeREAC/reac-lab`](https://github.com/FreeREAC/reac-lab),
 > which holds prose: design specs, rig journals and runbooks. `reac-lab` is
-> writing; `reac-labtools` is code.
+> writing; `reac-analysis` is code.
 
 ## Requirements
 
@@ -147,10 +147,10 @@ password, which are removed from every commit in this repository's history.
 
 ## Acknowledgements
 
-reac-labtools is original work, but the REAC wire protocol it decodes was made
+reac-analysis is original work, but the REAC wire protocol it decodes was made
 intelligible by prior reverse-engineering. The `0x8819` framing, the 16-bit
 little-endian sequence counter and the 24-bit slot layout were documented by the
-projects above; reac-labtools re-implements those documented *facts* and copies
+projects above; reac-analysis re-implements those documented *facts* and copies
 no upstream code. See [NOTICE](NOTICE).
 
 ## License
