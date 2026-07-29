@@ -1,0 +1,57 @@
+reac-labtools
+Copyright (C) 2026 Pau Aliagas <linuxnow@gmail.com>
+
+Licensed under GPL-3.0-or-later (see LICENSE).
+
+reac-labtools is the numpy/scipy signal-analysis bench for captured Roland
+REAC (audio-over-Ethernet, EtherType 0x8819) traffic: heterodyne pitch and
+clock-wobble meters, spectrum classification, per-channel decode health,
+glitch and A/B defect detection, plus the rig scripts that produce the
+captures those meters read.
+
+It is the dependency-carrying counterpart to reac-tools, which stays pure
+standard library. See README.md for the split.
+
+## Third-party code and references
+
+All source files in this repository are original works. No third-party
+code is copied or otherwise included; this repository therefore carries
+no third-party copyright. numpy and scipy are runtime dependencies used
+through their public APIs; no numpy or scipy source is vendored here.
+
+### Protocol facts referenced (no code reused, no upstream copyright)
+
+The REAC wire framing these tools decode was reverse-engineered and
+documented by the projects below. reac-labtools re-implements those
+documented facts in original Python -- locating the 0x8819 EtherType,
+stripping any 802.1Q tag, reading the 16-bit little-endian sequence
+counter from the first two payload bytes, and unpacking the 24-bit
+sample-major PCM slots -- without copying any code or structure from them:
+
+- per-gron/reacdriver -- GPL-3.0. The original REAC reverse-engineering
+  (macOS driver). Documents the wire framing: EtherType 0x8819, the 16-bit
+  little-endian sequence counter at payload bytes 0-1, the 0xC2 0xEA end
+  marker, and the 1492-byte frame.
+- norihiro/obs-h8819-source -- GPL-3.0-or-later -- Copyright (C) 2022
+  Norihiro Kamae <norihiro@nagater.net>. OBS REAC source plugin, framing
+  taken from reacdriver. Confirms the same 16-bit little-endian
+  l2_counter and per-frame +1 sequencing.
+- norihiro/reaccapture -- GPL-3.0. Linux REAC pcap-to-WAV decoder; the
+  s24be/s24le justification for the sample unpacking used here.
+
+These facts inform the original implementations in reac_codec.py,
+reac_frame_anatomy.py, decode_probe.py and the meters built on them.
+None of these files derive from upstream code; they re-express publicly
+documented protocol facts.
+
+### Standards and specifications (facts, not copyrightable, no claim)
+
+- libpcap classic savefile format -- file magic 0xA1B2C3D4, global and
+  per-packet headers, read by original struct-based code; no libpcap
+  code is used.
+- IEEE 802.1Q -- VLAN tag layout, for stripping the phantom tag seen on
+  bridge egress.
+
+The interface facts of the Roland REAC protocol (EtherType, framing,
+sequence counter) are stated as facts and carry no copyright claim by this
+project.
