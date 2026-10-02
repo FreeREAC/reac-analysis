@@ -9,7 +9,8 @@ classification, per-channel decode health, glitch and A/B defect detection.
 
 These are **instruments, not a library**: each one is a flat script that takes
 a capture on `argv` and prints a measurement. They are meant to be read, forked
-and adapted per experiment. There is no package, no stable API, no `pip install`.
+and adapted per experiment. There is no package, no stable API, nothing to install
+but the two dependencies.
 
 ## Relationship to reac-tools — read this first
 
@@ -38,14 +39,8 @@ use the other.
 
 ## Requirements
 
-```sh
-pip install -r requirements.txt   # numpy >= 1.24, scipy >= 1.10
-```
-
-Python 3.9+. `reac_frame_anatomy.py`, `reac_io_diff.py` and
-`reac_repacer_model.py` happen to be standard-library-only, but they ship here
-because they are the same kind of thing as their neighbours — and
-`reac_repacer_model.py` is the fixture the numpy-based re-pacer tests drive.
+Python 3.9+ with numpy and scipy (`requirements.txt`). Setting up a checkout
+and running the tests: [BUILDING.md](BUILDING.md).
 
 ## The instruments
 
@@ -104,21 +99,6 @@ python3 reac_glitch.py capture.pcap                   # clicks, gaps, pitch jump
 python3 reac_io_diff.py in.pcap out.pcap              # what the re-pacer changed
 python3 decode_probe.py capture.pcap                  # is the decode itself right?
 ```
-
-## Tests
-
-```sh
-make test
-# or
-python3 test_reac_tools.py      # codec: round-trip purity, 0 ppm floor, wobble accuracy, dedup
-python3 test_reac_repacer.py    # re-pacer model: payload bit-exactness, counter contiguity, PLC
-```
-
-These are plain scripts with their own `PASS`/`FAIL` counters, not a pytest
-suite — they predate the split and are kept as they were. `test_reac_repacer.py`
-is the executable **spec** of correct re-pacer behaviour: it is what refuted the
-"re-pacing corrupts the frames" hypothesis (see
-[`docs/REAC-REPACER-NIGHT.md`](docs/REAC-REPACER-NIGHT.md)).
 
 ## Provenance
 
