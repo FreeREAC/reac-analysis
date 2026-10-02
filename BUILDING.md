@@ -27,5 +27,6 @@ python3 test_reac_repacer.py    # re-pacer model: payload bit-exactness, counter
 These are plain scripts with their own `PASS`/`FAIL` counters, not a pytest
 suite — they predate the split and are kept as they were. `test_reac_repacer.py`
 is the executable **spec** of correct re-pacer behaviour: it is what refuted the
-"re-pacing corrupts the frames" hypothesis (see
-[`docs/REAC-REPACER-NIGHT.md`](docs/REAC-REPACER-NIGHT.md)).
+"re-pacing corrupts the frames" hypothesis. The audio payload is bit-exact through
+re-pacing; only the 2-byte REAC counter is rewritten (investigation report
+REAC-REPACER-NIGHT).

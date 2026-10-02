@@ -251,5 +251,20 @@ class Export(Fixture):
         self.assertIn('not/there.md is not in', str(e.exception))
 
 
+class RealTree(unittest.TestCase):
+    """This repository: the move list is exactly the rule applied at its base, and the tree is clean."""
+
+    def test_the_list_is_the_rule_at_base(self):
+        base, paths = fo.read_moves()
+        tree = fo.git('ls-tree', '-r', '--name-only', base).decode().splitlines()
+        self.assertEqual(sorted(p for p in tree if fo.belongs_in_ops(p)), sorted(paths))
+
+    def test_the_public_tree_is_clean(self):
+        env = {k: v for k, v in os.environ.items() if k != 'FREEREAC_REQUIRE_OPS'}
+        with mock.patch.dict(os.environ, env, clear=True):
+            buf = io.StringIO()
+            self.assertEqual(fo.check(out=buf), 0, buf.getvalue())
+
+
 if __name__ == '__main__':
     unittest.main()

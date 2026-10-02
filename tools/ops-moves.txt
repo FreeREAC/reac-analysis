@@ -1,0 +1,4 @@
+# Moved to FreeREAC/freereac-ops as reac-analysis/<path> (tools/freereac_ops.py). Cite one by its
+# slug, the name without its extension. The list is the guard's: a path here never comes back.
+# base 4e2e9544dd3aa1acfd0c0da091f9ceaed3f7e263
+docs/REAC-REPACER-NIGHT.md
