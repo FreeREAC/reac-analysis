@@ -181,7 +181,7 @@ def check(repo=REPO, out=sys.stdout):
                 if p.endswith('/'):
                     fail('CITES %s:%d %s: a directory that moved to freereac-ops' % (t, line, p))
                 else:
-                    fail('CITES %s:%d %s: cite the slug %s, not the file' % (t, line, p, slug(p)))
+                    fail('CITES %s:%d %s: cite the slug %s, not the file' % (t, line, p, os.path.basename(slug(p))))
     if README in present:
         with open(os.path.join(repo, README), encoding='utf-8', errors='replace') as f:
             for n, cmd in readme_build_lines(f.read()):

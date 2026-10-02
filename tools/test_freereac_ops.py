@@ -126,7 +126,7 @@ class Check(Fixture):
     def test_citation_by_file_fails_and_slug_passes(self):
         self.add('README.md', 'see [it](docs/X-NIGHT.md), notes/rig-install.md and 2026-01-02-y-plan.md\n')
         n, out = self.run_check()
-        self.assertIn('CITES README.md:1 docs/X-NIGHT.md', out)
+        self.assertIn('CITES README.md:1 docs/X-NIGHT.md: cite the slug X-NIGHT, not the file', out)
         self.assertIn('CITES README.md:1 notes/rig-install.md', out)
         self.assertIn('CITES README.md:1 scripts/2026-01-02-y-plan.md', out)
         self.assertEqual(n, 3, out)
